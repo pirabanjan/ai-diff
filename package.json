@@ -1,14 +1,45 @@
 {
   "name": "aidiff",
   "version": "0.1.0",
-  "private": true,
+  "description": "A vendor-neutral traceability and feature-history layer for AI-driven software development.",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "ai": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "scripts",
+    "install.sh",
+    "install.ps1",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "git",
+    "traceability",
+    "developer-tools",
+    "mcp",
+    "session-history"
+  ],
+  "homepage": "https://github.com/your-org/aidiff",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/aidiff.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/aidiff/issues"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
     "dev": "tsx src/cli.ts",
+    "install:global": "node scripts/install.js --global",
+    "install:local": "node scripts/install.js --local",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
