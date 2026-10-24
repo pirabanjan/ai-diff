@@ -1,25 +1,45 @@
 # AIDIFF
 
-AIDIFF is a vendor-neutral traceability and feature-history layer for AI-driven software development.
+AIDIFF is a local-first traceability layer for AI-assisted software development.
 
-Git remembers what changed. AI Commit preserves what the work meant. AI Diff explains how that meaning changed over time.
+It connects Git history, AI session activity, feature intent, validation evidence, and repository context in one place so engineering teams can understand not just what changed, but why it changed and how it was validated.
 
-AIDIFF keeps a local project history that ties together:
+## Why teams use AIDIFF
 
-- Git state and repo metadata
-- AI session records
-- AI commit summaries and relationships
-- Diff evidence and validation notes
-- Context retrieval for future work
-- MCP access for supported AI agents
+AI coding tools are fast, but they often leave behind fragmented context:
 
-## Why this exists
+- code changed without a durable explanation
+- validation evidence is lost
+- feature intent is not tied to repository state
+- sessions are hard to review or hand off
+- future work cannot easily understand prior decisions
 
-AI-generated changes are often hard to understand later because the code state, intent, and validation history are disconnected. AIDIFF gives a project local, reviewable evidence of what an AI session tried to do and how it evolved.
+AIDIFF fixes that by keeping the history local, reviewable, and grounded in the repo itself.
 
-## Installation
+## What AIDIFF captures
 
-### Option 1: use the bundled installer scripts
+AIDIFF preserves:
+
+- repository metadata and Git state
+- AI session records and prompts
+- feature-level AI commit summaries
+- change context and diff evidence
+- validation and follow-up work
+- relevant history for future tasks
+
+This makes it easier to review, trace, and continue work without losing context.
+
+## Core principles
+
+- Git remains the source of truth for code.
+- AI-generated summaries are treated as interpretation, not ground truth.
+- Metadata stays local by default.
+- History remains vendor-neutral and portable.
+- The workflow is designed for real engineering teams, not just experimentation.
+
+## Quick start
+
+### Install
 
 From the repo root:
 
@@ -34,7 +54,7 @@ On Windows PowerShell:
 powershell -ExecutionPolicy Bypass -File .\install.ps1 -Global
 ```
 
-### Option 2: install globally from a local package
+Alternative package install:
 
 ```bash
 npm install
@@ -42,26 +62,7 @@ npm pack
 npm install -g ./aidiff-0.1.0.tgz
 ```
 
-### Option 3: install directly from a Git repo
-
-```bash
-git clone <your-repo-url>
-cd aidiff
-npm install
-npm run build
-npm install -g .
-```
-
-### Option 4: use the package without a global install
-
-```bash
-npm install
-npx ai --help
-```
-
-## Usage in any Git repository
-
-After installing the CLI, go to any repository you want to track:
+### Use it in any Git repository
 
 ```bash
 cd /path/to/your/project
@@ -69,108 +70,74 @@ ai init
 ai status
 ```
 
-This creates a local metadata directory:
+This creates a local metadata directory under the repository, typically:
 
 ```bash
 .git/ai-history/
 ```
 
-The app stores its database and config locally within the project, so nothing is uploaded by default.
+### Session workflow
 
-## Core commands
+```bash
+ai session start --provider generic --model local
+ai session prompt "Investigate and fix the checkout flow"
+# work on the repo
+ai session finish "Fixed the checkout flow and validated the relevant checks pass"
+ai context "fix checkout flow"
+```
+
+### Common commands
 
 ```bash
 ai init
 ai status
-ai context "modify authentication to support organizations"
+ai context "add organization auth support"
 ai session start --provider generic --model local
-ai session prompt "Investigate SSO setup"
-ai session finish "Completed investigation"
-```
-
-### Session lifecycle
-
-```bash
-ai session start
 ai session prompt "Review the auth service"
 ai session finish "Auth review complete"
-ai session list
-ai session show <session-id>
-```
-
-### Context retrieval
-
-```bash
-ai context "add organization auth support"
-```
-
-This returns a ranked view of:
-
-- relevant AI Commits
-- relevant sessions
-- decisions and dependencies
-- known issues
-- unresolved work
-- relevant files
-- current Git state
-
-### MCP access
-
-```bash
 ai mcp
 ```
 
-The MCP server exposes tools including:
+## AI service integration
 
-- `get_ai_commit`
-- `list_ai_commits`
-- `get_session`
-- `search_history`
-- `get_relevant_context`
-- `get_ai_diff`
-- `get_dependencies`
-- `get_validation`
-- `get_current_status`
+This repository includes instruction files for different AI tools and workflows.
 
-## Example workflow
+- GitHub Copilot: [.github/copilot-instructions.md](.github/copilot-instructions.md)
+- GitHub Copilot Enterprise: [GITHUB_COPILOT_ENTERPRISE.md](GITHUB_COPILOT_ENTERPRISE.md)
+- Claude Code: [CLAUDE.md](CLAUDE.md)
+- Claude system prompt: [CLAUDE_SYSTEM_PROMPT.md](CLAUDE_SYSTEM_PROMPT.md)
+- Devin: [DEVIN.md](DEVIN.md)
+- Cursor / Codex-style rules: [.cursor/rules/aidiff.mdc](.cursor/rules/aidiff.mdc)
+- Codex instructions: [CODEX_INSTRUCTIONS.md](CODEX_INSTRUCTIONS.md)
+- Generic agent instructions: [AGENTS.md](AGENTS.md)
+- Universal master template: [AI_SESSION_MASTER_TEMPLATE.md](AI_SESSION_MASTER_TEMPLATE.md)
 
-```bash
-mkdir demo-app
-cd demo-app
-git init
-git config user.name "Your Name"
-git config user.email "you@example.com"
+Use the file that matches the AI platform you are using, or the master template for a vendor-neutral default.
 
-echo "# Demo app" > README.md
-git add README.md
-git commit -m "initial commit"
+## Documentation map
 
-ai init
-ai status
-ai session start --provider generic --model local
-ai session prompt "Add an admin-only billing view"
-ai session finish "Billing view implemented"
-ai context "add admin billing view"
-```
+- [docs/README.md](docs/README.md) — documentation index
+- [docs/agent-guides/README.md](docs/agent-guides/README.md) — AI tool-specific instruction guides
+- [docs/customer-facing/README.md](docs/customer-facing/README.md) — customer-facing overview and rollout guidance
+- [FULL_BUILD_SPEC.md](FULL_BUILD_SPEC.md) — full project specification and build requirements
 
-## Privacy and local-first design
+## Security and privacy
 
-AIDIFF is designed to be local-first and vendor-neutral:
+AIDIFF is built for local-first operation:
 
-- metadata is stored under the repo's `.ai-history` directory
-- raw prompts are not required to be uploaded anywhere
-- retention is configurable
-- Git remains the source of truth for code changes
-- no external cloud service is required
+- metadata stays local unless the user explicitly opts into external sharing
+- Git remains the canonical source of truth for code changes
+- AI summaries do not replace repository evidence
+- the workflow is designed for internal and customer-facing environments without forcing a cloud-only model
 
-## Production packaging notes
+## Production packaging
 
-This package is structured for customer distribution:
+The package is structured for distribution and installation in real environments:
 
-- CLI binary is exposed via `bin.ai`
-- compiled output is built into `dist/`
-- packaging is driven by `npm pack` and `npm install -g`
-- install flow works outside the source repository
+- CLI binary exposed via the `ai` command
+- compiled output generated under `dist/`
+- install flow supports local or global installation
+- packaged for customer or team distribution outside the repo source tree
 
 ## Troubleshooting
 
@@ -189,7 +156,7 @@ git init
 ai init
 ```
 
-### Repository not initialized
+### Repo not initialized
 
 ```bash
 ai init
@@ -197,4 +164,6 @@ ai init
 
 ## Support
 
-This project is intended for local developer workflow and customer-facing internal distribution. For production deployment, update the package metadata to your real GitHub/org URLs before publishing.
+This project is intended for internal engineering workflows and customer-facing deployment where local traceability and reviewability matter.
+
+For production usage, update package metadata and repository URLs before public publishing.

@@ -1,0 +1,48 @@
+---
+description: AIDIFF coding rules for Cursor and codex-style agents
+---
+
+# AIDIFF Rules
+
+Use AIDIFF for any coding task in this repository or in a Git repo that should be traceable.
+
+## Required workflow
+
+1. Confirm the repo is a Git repository.
+2. Run `ai init` if AIDIFF is not already initialized.
+3. Start a session when work begins:
+
+```bash
+ai session start --provider cursor --model local
+ai session prompt "<task summary>"
+```
+
+4. Keep task intent and evidence grounded in repository state and validation output.
+5. Validate before finishing the task.
+6. Close the session with a summary:
+
+```bash
+ai session finish "<what changed, why it changed, and how it was validated>"
+ai status
+ai context "<short task summary>"
+```
+
+## Guardrails
+
+- Git stays the source of truth for code.
+- Do not invent session history, Git diffs, or validation output.
+- Keep metadata local-first.
+- Summaries must be short, factual, and reviewable.
+- If the repo is not configured for AIDIFF, ask whether to initialize it first.
+
+## Example
+
+```bash
+cd /path/to/project
+ai init
+ai session start --provider cursor --model local
+ai session prompt "Add regression coverage for the auth redirect bug"
+# ... perform work and validate ...
+ai session finish "Added regression coverage and verified the auth tests pass"
+ai context "add auth redirect test coverage"
+```
